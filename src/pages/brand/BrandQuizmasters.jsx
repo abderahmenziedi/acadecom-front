@@ -26,8 +26,8 @@ export default function BrandQuizmasters() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Mes Quiz Masters</h1>
-        <p className="text-sm text-gray-500">{qms.length} quiz masters associés</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mes Quiz Masters</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{qms.length} quiz masters associés</p>
       </div>
       <Table columns={columns} data={qms} loading={loading} emptyMessage="Aucun quiz master associé" />
     </div>

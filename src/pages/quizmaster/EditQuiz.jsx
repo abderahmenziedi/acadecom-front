@@ -7,7 +7,7 @@ import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 import Spinner from '../../components/ui/Spinner';
 import toast from 'react-hot-toast';
-import { HiOutlinePlus, HiOutlineTrash, HiOutlinePencil, HiOutlineCheck } from 'react-icons/hi';
+import { Plus, Trash2, Pencil, Check } from 'lucide-react';
 
 export default function EditQuiz() {
   const { id } = useParams();
@@ -93,8 +93,8 @@ export default function EditQuiz() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gérer le Quiz</h1>
-          <p className="text-sm text-gray-500">{quiz.title}</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gérer le Quiz</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{quiz.title}</p>
         </div>
         <Button variant="secondary" onClick={() => navigate('/quizmaster/quizzes')}>← Retour</Button>
       </div>
@@ -105,15 +105,15 @@ export default function EditQuiz() {
         <div className="space-y-4">
           <Input label="Titre" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
             <textarea rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             <Input label="Temps limite (sec)" type="number" value={form.timeLimit} onChange={(e) => setForm({ ...form, timeLimit: e.target.value })} />
             <Input label="Points/question" type="number" value={form.pointsPerQuestion} onChange={(e) => setForm({ ...form, pointsPerQuestion: Number(e.target.value) })} />
             <label className="flex items-center gap-2 text-sm pt-6">
-              <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="rounded border-gray-300 text-primary focus:ring-primary" />
+              <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-primary focus:ring-primary" />
               Actif
             </label>
           </div>
@@ -128,26 +128,26 @@ export default function EditQuiz() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Questions ({quiz.questions?.length || 0})</CardTitle>
-            <Button size="sm" onClick={openAddQuestion}><HiOutlinePlus className="h-4 w-4" /> Ajouter</Button>
+            <Button size="sm" onClick={openAddQuestion}><Plus className="h-4 w-4" /> Ajouter</Button>
           </div>
         </CardHeader>
         {quiz.questions?.length > 0 ? (
           <div className="space-y-3">
             {quiz.questions.map((q, i) => (
-              <div key={q.id} className="flex items-start justify-between rounded-lg border border-gray-200 p-4">
+              <div key={q.id} className="flex items-start justify-between rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                 <div>
-                  <p className="font-medium text-gray-900">{i + 1}. {q.text}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{i + 1}. {q.text}</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {q.options?.map((o) => (
-                      <span key={o.id} className={`rounded-full px-2.5 py-0.5 text-xs ${o.isCorrect ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                        {o.isCorrect && <HiOutlineCheck className="mr-1 inline h-3 w-3" />}{o.text}
+                      <span key={o.id} className={`rounded-full px-2.5 py-0.5 text-xs ${o.isCorrect ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'}`}>
+                        {o.isCorrect && <Check className="mr-1 inline h-3 w-3" />}{o.text}
                       </span>
                     ))}
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => openEditQuestion(q)} className="rounded p-1 text-gray-400 hover:text-primary"><HiOutlinePencil className="h-4 w-4" /></button>
-                  <button onClick={() => handleDeleteQuestion(q.id)} className="rounded p-1 text-gray-400 hover:text-danger"><HiOutlineTrash className="h-4 w-4" /></button>
+                  <button onClick={() => openEditQuestion(q)} className="rounded p-1 text-gray-400 hover:text-primary"><Pencil className="h-4 w-4" /></button>
+                  <button onClick={() => handleDeleteQuestion(q.id)} className="rounded p-1 text-gray-400 hover:text-danger"><Trash2 className="h-4 w-4" /></button>
                 </div>
               </div>
             ))}
@@ -161,29 +161,29 @@ export default function EditQuiz() {
       <Modal open={qModal.open} onClose={() => setQModal({ open: false, question: null })} title={qModal.question ? 'Modifier la Question' : 'Nouvelle Question'} size="lg">
         <div className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Question</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Question</label>
             <textarea rows={2} value={qForm.text} onChange={(e) => setQForm({ ...qForm, text: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
           </div>
           <Input label="Points" type="number" value={qForm.points} onChange={(e) => setQForm({ ...qForm, points: Number(e.target.value) })} />
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">Options</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Options</label>
             <div className="space-y-2">
               {qForm.options.map((opt, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <input type="checkbox" checked={opt.isCorrect} onChange={(e) => updateOption(i, 'isCorrect', e.target.checked)}
-                    className="rounded border-gray-300 text-primary focus:ring-primary" title="Bonne réponse" />
+                    className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-primary focus:ring-primary" title="Bonne réponse" />
                   <input value={opt.text} onChange={(e) => updateOption(i, 'text', e.target.value)}
-                    className="flex-1 rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                     placeholder={`Option ${i + 1}`} />
                   {qForm.options.length > 2 && (
-                    <button onClick={() => removeOption(i)} className="text-gray-400 hover:text-danger"><HiOutlineTrash className="h-4 w-4" /></button>
+                    <button onClick={() => removeOption(i)} className="text-gray-400 hover:text-danger"><Trash2 className="h-4 w-4" /></button>
                   )}
                 </div>
               ))}
             </div>
-            <Button size="sm" variant="ghost" className="mt-2" onClick={addOption}><HiOutlinePlus className="h-3 w-3" /> Option</Button>
+            <Button size="sm" variant="ghost" className="mt-2" onClick={addOption}><Plus className="h-3 w-3" /> Option</Button>
           </div>
 
           <div className="flex justify-end gap-3">

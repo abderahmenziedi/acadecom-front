@@ -36,8 +36,8 @@ export default function BrandProfile() {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Mon Profil</h1>
-        <p className="text-sm text-gray-500">Gérez les informations de votre marque</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mon Profil</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Gérez les informations de votre marque</p>
       </div>
 
       <Card>
@@ -47,12 +47,12 @@ export default function BrandProfile() {
           <Input label="Nom" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <Input label="Secteur d'activité" value={form.industry} onChange={(e) => setForm({ ...form, industry: e.target.value })} />
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
             <textarea
               rows={4}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
           <div className="flex justify-end">

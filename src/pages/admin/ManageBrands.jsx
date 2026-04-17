@@ -6,7 +6,7 @@ import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
 import { formatDate } from '../../utils/formatters';
 import toast from 'react-hot-toast';
-import { HiOutlinePlus } from 'react-icons/hi';
+import { Plus } from 'lucide-react';
 
 export default function ManageBrands() {
   const [brands, setBrands] = useState([]);
@@ -79,10 +79,10 @@ export default function ManageBrands() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des Marques</h1>
-          <p className="text-sm text-gray-500">{brands.length} marques</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestion des Marques</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{brands.length} marques</p>
         </div>
-        <Button onClick={openCreate}><HiOutlinePlus className="h-4 w-4" /> Nouvelle Marque</Button>
+        <Button onClick={openCreate}><Plus className="h-4 w-4" /> Nouvelle Marque</Button>
       </div>
 
       <Table columns={columns} data={brands} loading={loading} />
@@ -96,12 +96,12 @@ export default function ManageBrands() {
           )}
           <Input label="Secteur d'activité" value={form.industry} onChange={(e) => setForm({ ...form, industry: e.target.value })} />
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
             <textarea
               rows={3}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
           <div className="flex justify-end gap-3">

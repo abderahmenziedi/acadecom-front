@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,18 +7,20 @@ import { useAuth } from '../../context/AuthContext';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import api from '../../api/axios';
-import { useEffect } from 'react';
+import { User, Mail, Lock, ArrowRight, Zap, Briefcase, GraduationCap } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { clsx } from 'clsx';
 
 const roleOptions = [
-  { value: 'participant', label: 'Participant', desc: 'Participez à des quiz et gagnez des points' },
-  { value: 'brand', label: 'Marque', desc: 'Gérez vos quiz masters et suivez les analytiques' },
-  { value: 'quizmaster', label: 'Quiz Master', desc: 'Créez et gérez des quiz interactifs' },
+  { value: 'participant', label: 'Participant', desc: 'Quiz et points', icon: Zap, color: 'emerald' },
+  { value: 'brand', label: 'Marque', desc: 'Gérez vos quiz', icon: Briefcase, color: 'blue' },
+  { value: 'quizmaster', label: 'Quiz Master', desc: 'Créez des quiz', icon: GraduationCap, color: 'purple' },
 ];
 
-const roleColors = {
-  participant: 'border-emerald-300 bg-emerald-50 text-emerald-700 ring-emerald-500/30',
-  brand: 'border-blue-300 bg-blue-50 text-blue-700 ring-blue-500/30',
-  quizmaster: 'border-purple-300 bg-purple-50 text-purple-700 ring-purple-500/30',
+const roleStyles = {
+  participant: { active: 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 ring-2 ring-emerald-500/30', text: 'text-emerald-700 dark:text-emerald-400' },
+  brand: { active: 'border-blue-400 bg-blue-50 dark:bg-blue-900/20 ring-2 ring-blue-500/30', text: 'text-blue-700 dark:text-blue-400' },
+  quizmaster: { active: 'border-purple-400 bg-purple-50 dark:bg-purple-900/20 ring-2 ring-purple-500/30', text: 'text-purple-700 dark:text-purple-400' },
 };
 
 const schema = z.object({
@@ -42,14 +44,13 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [brands, setBrands] = useState([]);
 
-  const { register, handleSubmit, watch, formState: { errors }, setError, setValue } = useForm({
+  const { register, handleSubmit, watch, formState: { errors }, setError } = useForm({
     resolver: zodResolver(schema),
     defaultValues: { role: 'participant', brandId: '' },
   });
 
   const selectedRole = watch('role');
 
-  // Fetch brands when quizmaster role is selected (public endpoint)
   useEffect(() => {
     if (selectedRole === 'quizmaster') {
       api.get('/v1/auth/brands')
@@ -62,9 +63,7 @@ export default function Register() {
     setLoading(true);
     try {
       const payload = { name: data.name, email: data.email, password: data.password, role: data.role };
-      if (data.role === 'quizmaster' && data.brandId) {
-        payload.brandId = Number(data.brandId);
-      }
+      if (data.role === 'quizmaster' && data.brandId) payload.brandId = Number(data.brandId);
       await registerUser(payload);
       navigate('/login', { replace: true });
     } catch (err) {
@@ -78,106 +77,78 @@ export default function Register() {
   return (
     <div>
       <div className="mb-8">
-        <div className="lg:hidden mb-6 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white font-bold text-lg">A</div>
-          <span className="text-xl font-bold text-gray-900">AcadeCom</span>
-        </div>
-        <h2 className="text-2xl font-bold text-gray-900">Inscription</h2>
-        <p className="mt-2 text-sm text-gray-500">Créez votre compte pour accéder à la plateforme.</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Créer un compte</h2>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Rejoignez AcadeCom en quelques secondes.</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {errors.root && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-danger">{errors.root.message}</div>
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 p-3.5 text-sm text-danger"
+          >
+            {errors.root.message}
+          </motion.div>
         )}
 
         {/* Role selection */}
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">Choisissez votre rôle</label>
-          <div className="grid grid-cols-2 gap-2">
-            {roleOptions.map((r) => (
-              <label
-                key={r.value}
-                className={`relative flex cursor-pointer flex-col rounded-lg border p-3 transition-all
-                  ${selectedRole === r.value
-                    ? `${roleColors[r.value]} ring-2`
-                    : 'border-gray-200 bg-white hover:border-gray-300'
-                  }`}
-              >
-                <input
-                  type="radio"
-                  value={r.value}
-                  {...register('role')}
-                  className="sr-only"
-                />
-                <span className="text-sm font-semibold">{r.label}</span>
-                <span className={`mt-0.5 text-xs ${selectedRole === r.value ? 'opacity-80' : 'text-gray-500'}`}>{r.desc}</span>
-              </label>
-            ))}
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Choisissez votre rôle</label>
+          <div className="grid grid-cols-3 gap-2">
+            {roleOptions.map((r) => {
+              const isActive = selectedRole === r.value;
+              const style = roleStyles[r.value];
+              return (
+                <label
+                  key={r.value}
+                  className={clsx(
+                    'relative flex cursor-pointer flex-col items-center rounded-xl border p-3 transition-all',
+                    isActive
+                      ? style.active
+                      : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600',
+                  )}
+                >
+                  <input type="radio" value={r.value} {...register('role')} className="sr-only" />
+                  <r.icon className={clsx('h-5 w-5 mb-1', isActive ? style.text : 'text-gray-400 dark:text-gray-500')} />
+                  <span className={clsx('text-xs font-semibold', isActive ? style.text : 'text-gray-700 dark:text-gray-300')}>{r.label}</span>
+                </label>
+              );
+            })}
           </div>
-          {errors.role && <p className="mt-1 text-xs text-danger">{errors.role.message}</p>}
         </div>
 
-        {/* Brand selector for quizmaster */}
         {selectedRole === 'quizmaster' && (
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Marque associée</label>
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
+            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">Marque associée</label>
             <select
               {...register('brandId')}
-              className={`w-full rounded-lg border px-3 py-2 text-sm transition-colors
-                focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
-                ${errors.brandId ? 'border-danger' : 'border-gray-300'}`}
+              className={clsx(
+                'w-full rounded-xl border bg-white dark:bg-gray-800 dark:text-gray-100 px-3.5 py-2.5 text-sm transition-all',
+                'focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary',
+                errors.brandId ? 'border-danger' : 'border-gray-300 dark:border-gray-600',
+              )}
             >
               <option value="">— Sélectionnez une marque —</option>
-              {brands.map((b) => (
-                <option key={b.id} value={b.id}>{b.name || b.email}</option>
-              ))}
+              {brands.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
-            {errors.brandId && <p className="mt-1 text-xs text-danger">{errors.brandId.message}</p>}
-          </div>
+            {errors.brandId && <p className="mt-1.5 text-xs text-danger">{errors.brandId.message}</p>}
+          </motion.div>
         )}
 
-        <Input
-          label="Nom complet"
-          placeholder="Jean Dupont"
-          error={errors.name?.message}
-          {...register('name')}
-        />
+        <Input label="Nom complet" placeholder="Jean Dupont" icon={User} error={errors.name?.message} {...register('name')} />
+        <Input label="Email" type="email" placeholder="votre@email.com" icon={Mail} error={errors.email?.message} {...register('email')} />
+        <Input label="Mot de passe" type="password" placeholder="••••••••" icon={Lock} error={errors.password?.message} {...register('password')} />
+        <Input label="Confirmer" type="password" placeholder="••••••••" icon={Lock} error={errors.confirmPassword?.message} {...register('confirmPassword')} />
 
-        <Input
-          label="Email"
-          type="email"
-          placeholder="votre@email.com"
-          error={errors.email?.message}
-          {...register('email')}
-        />
-
-        <Input
-          label="Mot de passe"
-          type="password"
-          placeholder="••••••••"
-          error={errors.password?.message}
-          {...register('password')}
-        />
-
-        <Input
-          label="Confirmer le mot de passe"
-          type="password"
-          placeholder="••••••••"
-          error={errors.confirmPassword?.message}
-          {...register('confirmPassword')}
-        />
-
-        <Button type="submit" loading={loading} className="w-full">
-          S'inscrire
+        <Button type="submit" loading={loading} variant="gradient" className="w-full" size="lg" iconRight={ArrowRight}>
+          Créer mon compte
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-500">
+      <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
         Déjà un compte ?{' '}
-        <Link to="/login" className="font-medium text-primary hover:text-primary-dark">
-          Se connecter
-        </Link>
+        <Link to="/login" className="font-semibold text-primary hover:text-primary-dark transition-colors">Se connecter</Link>
       </p>
     </div>
   );

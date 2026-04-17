@@ -42,8 +42,8 @@ export default function CreateQuiz() {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Créer un Quiz</h1>
-        <p className="text-sm text-gray-500">Définissez les paramètres de votre quiz</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Créer un Quiz</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Définissez les paramètres de votre quiz</p>
       </div>
 
       <Card>
@@ -51,11 +51,11 @@ export default function CreateQuiz() {
           <Input label="Titre du quiz" error={errors.title?.message} {...register('title')} />
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
             <textarea
               rows={3}
               {...register('description')}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
 
@@ -76,7 +76,7 @@ export default function CreateQuiz() {
           </div>
 
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" {...register('shuffleQuestions')} className="rounded border-gray-300 text-primary focus:ring-primary" />
+            <input type="checkbox" {...register('shuffleQuestions')} className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-primary focus:ring-primary" />
             Mélanger les questions
           </label>
 

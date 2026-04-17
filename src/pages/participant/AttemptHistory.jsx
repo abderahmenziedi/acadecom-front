@@ -20,7 +20,7 @@ export default function AttemptHistory() {
   }, []);
 
   const columns = [
-    { key: 'quiz', label: 'Quiz', render: (r) => r.quiz?.title || `Quiz #${r.quizId}` },
+    { key: 'quiz', label: 'Quiz', render: (r) => <span className="text-gray-900 dark:text-white font-medium">{r.quiz?.title || `Quiz #${r.quizId}`}</span> },
     { key: 'score', label: 'Score', render: (r) => `${r.score}/${r.maxScore}` },
     {
       key: 'pct', label: '%',
@@ -48,8 +48,8 @@ export default function AttemptHistory() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Historique des tentatives</h1>
-        <p className="text-sm text-gray-500">{attempts.length} tentatives</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Historique des tentatives</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{attempts.length} tentatives</p>
       </div>
       <Table columns={columns} data={attempts} loading={loading} emptyMessage="Aucune tentative" />
     </div>

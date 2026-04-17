@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HiOutlineUsers, HiOutlineBriefcase, HiOutlineAcademicCap, HiOutlineShieldCheck } from 'react-icons/hi';
+import { Users, Briefcase, GraduationCap, ShieldCheck } from 'lucide-react';
 import { getUsers } from '../../api/admin';
 import StatsCard from '../../components/StatsCard';
 import Card, { CardHeader, CardTitle } from '../../components/ui/Card';
@@ -35,15 +35,15 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Tableau de bord Admin</h1>
-        <p className="text-sm text-gray-500">Vue d'ensemble de la plateforme</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tableau de bord Admin</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Vue d'ensemble de la plateforme</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard title="Utilisateurs" value={stats.total} icon={HiOutlineUsers} color="primary" />
-        <StatsCard title="Participants" value={stats.participants} icon={HiOutlineUsers} color="success" />
-        <StatsCard title="Marques" value={stats.brands} icon={HiOutlineBriefcase} color="info" />
-        <StatsCard title="Quiz Masters" value={stats.quizmasters} icon={HiOutlineAcademicCap} color="warning" />
+        <StatsCard title="Utilisateurs" value={stats.total} icon={Users} color="primary" delay={0} />
+        <StatsCard title="Participants" value={stats.participants} icon={Users} color="success" delay={0.1} />
+        <StatsCard title="Marques" value={stats.brands} icon={Briefcase} color="info" delay={0.2} />
+        <StatsCard title="Quiz Masters" value={stats.quizmasters} icon={GraduationCap} color="warning" delay={0.3} />
       </div>
 
       <Card>
@@ -51,10 +51,10 @@ export default function AdminDashboard() {
           <CardTitle>Comptes bloqués</CardTitle>
         </CardHeader>
         <div className="flex items-center gap-3">
-          <HiOutlineShieldCheck className="h-8 w-8 text-red-500" />
+          <ShieldCheck className="h-8 w-8 text-red-500" />
           <div>
-            <p className="text-2xl font-bold text-gray-900">{stats.blocked}</p>
-            <p className="text-sm text-gray-500">comptes actuellement bloqués</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.blocked}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">comptes actuellement bloqués</p>
           </div>
         </div>
       </Card>

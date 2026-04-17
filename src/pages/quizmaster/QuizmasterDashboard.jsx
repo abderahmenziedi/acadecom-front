@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getQMDashboard } from '../../api/quizmaster';
-import { HiOutlineCollection, HiOutlineUsers, HiOutlineChartBar, HiOutlineLightningBolt } from 'react-icons/hi';
+import { LayoutGrid, Users, BarChart3, Zap } from 'lucide-react';
 import StatsCard from '../../components/StatsCard';
 import Card, { CardHeader, CardTitle } from '../../components/ui/Card';
 import Spinner from '../../components/ui/Spinner';
@@ -27,15 +27,15 @@ export default function QuizmasterDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Tableau de bord Quiz Master</h1>
-        <p className="text-sm text-gray-500">Gérez vos quiz et suivez les performances</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tableau de bord Quiz Master</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Gérez vos quiz et suivez les performances</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard title="Total Quiz" value={stats.totalQuizzes ?? 0} icon={HiOutlineCollection} color="primary" />
-        <StatsCard title="Questions" value={stats.totalQuestions ?? 0} icon={HiOutlineLightningBolt} color="info" />
-        <StatsCard title="Participations" value={stats.totalAttempts ?? 0} icon={HiOutlineUsers} color="success" />
-        <StatsCard title="Score moyen" value={stats.globalAveragePercentage != null ? `${stats.globalAveragePercentage}%` : '—'} icon={HiOutlineChartBar} color="warning" />
+        <StatsCard title="Total Quiz" value={stats.totalQuizzes ?? 0} icon={LayoutGrid} color="primary" delay={0} />
+        <StatsCard title="Questions" value={stats.totalQuestions ?? 0} icon={Zap} color="info" delay={0.1} />
+        <StatsCard title="Participations" value={stats.totalAttempts ?? 0} icon={Users} color="success" delay={0.2} />
+        <StatsCard title="Score moyen" value={stats.globalAveragePercentage != null ? `${stats.globalAveragePercentage}%` : '—'} icon={BarChart3} color="warning" delay={0.3} />
       </div>
 
       {stats.topQuizzes && stats.topQuizzes.length > 0 && (

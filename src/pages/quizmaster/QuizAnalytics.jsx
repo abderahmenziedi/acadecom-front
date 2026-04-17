@@ -5,7 +5,7 @@ import Card, { CardHeader, CardTitle } from '../../components/ui/Card';
 import StatsCard from '../../components/StatsCard';
 import Spinner from '../../components/ui/Spinner';
 import Button from '../../components/ui/Button';
-import { HiOutlineUsers, HiOutlineChartBar, HiOutlineClock, HiOutlineStar } from 'react-icons/hi';
+import { Users, BarChart3, Clock, Star } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function QuizAnalytics() {
@@ -32,17 +32,17 @@ export default function QuizAnalytics() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Analytiques du Quiz</h1>
-          <p className="text-sm text-gray-500">{stats.quiz?.title || `Quiz #${id}`}</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Analytiques du Quiz</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{stats.quiz?.title || `Quiz #${id}`}</p>
         </div>
         <Button variant="secondary" onClick={() => navigate('/quizmaster/quizzes')}>← Retour</Button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard title="Participations" value={stats.totalAttempts ?? 0} icon={HiOutlineUsers} color="primary" />
-        <StatsCard title="Score moyen" value={stats.averagePercentage != null ? `${stats.averagePercentage}%` : '—'} icon={HiOutlineChartBar} color="success" />
-        <StatsCard title="Plus haut" value={stats.highestScore ?? '—'} icon={HiOutlineStar} color="info" />
-        <StatsCard title="Plus bas" value={stats.lowestScore ?? '—'} icon={HiOutlineClock} color="warning" />
+        <StatsCard title="Participations" value={stats.totalAttempts ?? 0} icon={Users} color="primary" delay={0} />
+        <StatsCard title="Score moyen" value={stats.averagePercentage != null ? `${stats.averagePercentage}%` : '—'} icon={BarChart3} color="success" delay={0.1} />
+        <StatsCard title="Plus haut" value={stats.highestScore ?? '—'} icon={Star} color="info" delay={0.2} />
+        <StatsCard title="Plus bas" value={stats.lowestScore ?? '—'} icon={Clock} color="warning" delay={0.3} />
       </div>
 
       {stats.questionStats && stats.questionStats.length > 0 && (

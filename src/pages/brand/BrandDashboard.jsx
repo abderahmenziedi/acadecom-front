@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getDashboard } from '../../api/brand';
-import { HiOutlineUsers, HiOutlineCollection, HiOutlineChartBar, HiOutlineEye } from 'react-icons/hi';
+import { Users, LayoutGrid, BarChart3, Eye } from 'lucide-react';
 import StatsCard from '../../components/StatsCard';
 import Card, { CardHeader, CardTitle } from '../../components/ui/Card';
 import Spinner from '../../components/ui/Spinner';
@@ -27,15 +27,15 @@ export default function BrandDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Tableau de bord Marque</h1>
-        <p className="text-sm text-gray-500">Analytiques et performance de votre marque</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tableau de bord Marque</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Analytiques et performance de votre marque</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard title="Quiz Masters" value={stats.totalQuizmasters ?? 0} icon={HiOutlineUsers} color="primary" />
-        <StatsCard title="Quiz créés" value={stats.totalQuizzes ?? 0} icon={HiOutlineCollection} color="info" />
-        <StatsCard title="Participations" value={stats.totalAttempts ?? 0} icon={HiOutlineEye} color="success" />
-        <StatsCard title="Score moyen" value={stats.averageScorePercentage != null ? `${stats.averageScorePercentage}%` : '—'} icon={HiOutlineChartBar} color="warning" />
+        <StatsCard title="Quiz Masters" value={stats.totalQuizmasters ?? 0} icon={Users} color="primary" delay={0} />
+        <StatsCard title="Quiz créés" value={stats.totalQuizzes ?? 0} icon={LayoutGrid} color="info" delay={0.1} />
+        <StatsCard title="Participations" value={stats.totalAttempts ?? 0} icon={Eye} color="success" delay={0.2} />
+        <StatsCard title="Score moyen" value={stats.averageScorePercentage != null ? `${stats.averageScorePercentage}%` : '—'} icon={BarChart3} color="warning" delay={0.3} />
       </div>
 
       {data.recentQuizzes && data.recentQuizzes.length > 0 && (

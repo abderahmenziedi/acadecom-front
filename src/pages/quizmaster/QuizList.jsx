@@ -6,7 +6,7 @@ import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import { formatDate } from '../../utils/formatters';
 import toast from 'react-hot-toast';
-import { HiOutlinePlus } from 'react-icons/hi';
+import { Plus } from 'lucide-react';
 
 export default function QuizList() {
   const [quizzes, setQuizzes] = useState([]);
@@ -58,11 +58,11 @@ export default function QuizList() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Mes Quiz</h1>
-          <p className="text-sm text-gray-500">{quizzes.length} quiz</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mes Quiz</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{quizzes.length} quiz</p>
         </div>
         <Link to="/quizmaster/create">
-          <Button><HiOutlinePlus className="h-4 w-4" /> Créer un Quiz</Button>
+          <Button><Plus className="h-4 w-4" /> Créer un Quiz</Button>
         </Link>
       </div>
       <Table columns={columns} data={quizzes} loading={loading} emptyMessage="Aucun quiz créé" />

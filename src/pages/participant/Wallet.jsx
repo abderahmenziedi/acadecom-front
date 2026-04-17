@@ -3,9 +3,10 @@ import { getWallet, getPointsHistory } from '../../api/participant';
 import Card, { CardHeader, CardTitle } from '../../components/ui/Card';
 import Table from '../../components/ui/Table';
 import Spinner from '../../components/ui/Spinner';
-import { HiOutlineStar } from 'react-icons/hi';
+import { Star } from 'lucide-react';
 import { formatDateTime } from '../../utils/formatters';
 import Badge from '../../components/ui/Badge';
+import { motion } from 'framer-motion';
 
 export default function Wallet() {
   const [wallet, setWallet] = useState(null);
@@ -43,21 +44,23 @@ export default function Wallet() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Portefeuille de Points</h1>
-        <p className="text-sm text-gray-500">Suivez vos gains et dépenses de points</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Portefeuille de Points</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Suivez vos gains et dépenses de points</p>
       </div>
 
-      <Card className="bg-gradient-to-r from-primary to-primary-dark text-white">
-        <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/20">
-            <HiOutlineStar className="h-7 w-7" />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <Card className="bg-gradient-to-r from-primary to-primary-dark text-white shadow-lg shadow-primary/20">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+              <Star className="h-7 w-7" />
+            </div>
+            <div>
+              <p className="text-sm text-white/80">Solde total</p>
+              <p className="text-3xl font-bold">{wallet?.totalPoints ?? wallet?.balance ?? 0} pts</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-white/80">Solde total</p>
-            <p className="text-3xl font-bold">{wallet?.totalPoints ?? wallet?.balance ?? 0} pts</p>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </motion.div>
 
       <Card>
         <CardHeader><CardTitle>Historique des points</CardTitle></CardHeader>

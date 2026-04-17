@@ -6,7 +6,7 @@ import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
 import { formatDate } from '../../utils/formatters';
 import toast from 'react-hot-toast';
-import { HiOutlinePlus } from 'react-icons/hi';
+import { Plus } from 'lucide-react';
 
 export default function ManageQuizmasters() {
   const [qms, setQms] = useState([]);
@@ -82,10 +82,10 @@ export default function ManageQuizmasters() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des Quiz Masters</h1>
-          <p className="text-sm text-gray-500">{qms.length} quiz masters</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestion des Quiz Masters</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{qms.length} quiz masters</p>
         </div>
-        <Button onClick={openCreate}><HiOutlinePlus className="h-4 w-4" /> Nouveau Quiz Master</Button>
+        <Button onClick={openCreate}><Plus className="h-4 w-4" /> Nouveau Quiz Master</Button>
       </div>
 
       <Table columns={columns} data={qms} loading={loading} />
@@ -98,11 +98,11 @@ export default function ManageQuizmasters() {
             <Input label="Mot de passe" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
           )}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Marque associée</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Marque associée</label>
             <select
               value={form.brandId}
               onChange={(e) => setForm({ ...form, brandId: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
               <option value="">Sélectionner une marque</option>
               {brands.map((b) => (

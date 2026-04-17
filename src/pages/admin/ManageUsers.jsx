@@ -7,7 +7,7 @@ import Modal from '../../components/ui/Modal';
 import { formatDate, downloadBlob } from '../../utils/formatters';
 import { getRoleLabel } from '../../utils/roles';
 import toast from 'react-hot-toast';
-import { HiOutlineSearch, HiOutlineDownload } from 'react-icons/hi';
+import { Search, Download } from 'lucide-react';
 
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -87,30 +87,30 @@ export default function ManageUsers() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des Utilisateurs</h1>
-          <p className="text-sm text-gray-500">{users.length} utilisateurs</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestion des Utilisateurs</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{users.length} utilisateurs</p>
         </div>
         <Button variant="outline" onClick={handleExport}>
-          <HiOutlineDownload className="h-4 w-4" /> Export CSV
+          <Download className="h-4 w-4" /> Export CSV
         </Button>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-[200px]">
-          <HiOutlineSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             placeholder="Rechercher par nom ou email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white py-2 pl-10 pr-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
         <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
         >
           <option value="">Tous les rôles</option>
           <option value="participant">Participant</option>
@@ -124,7 +124,7 @@ export default function ManageUsers() {
 
       {/* Delete confirm modal */}
       <Modal open={!!deleteModal} onClose={() => setDeleteModal(null)} title="Confirmer la suppression">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Voulez-vous vraiment supprimer <strong>{deleteModal?.email}</strong> ? Cette action est irréversible.
         </p>
         <div className="mt-6 flex justify-end gap-3">

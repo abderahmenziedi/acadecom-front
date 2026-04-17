@@ -19,6 +19,7 @@ import BrandProfile from '../pages/brand/BrandProfile';
 import BrandQuizmasters from '../pages/brand/BrandQuizmasters';
 import BrandQuizzes from '../pages/brand/BrandQuizzes';
 import BrandAnalytics from '../pages/brand/BrandAnalytics';
+import BrandProducts from '../pages/brand/BrandProducts';
 
 // Quizmaster pages
 import QuizmasterDashboard from '../pages/quizmaster/QuizmasterDashboard';
@@ -35,6 +36,9 @@ import QuizResult from '../pages/participant/QuizResult';
 import AttemptHistory from '../pages/participant/AttemptHistory';
 import Wallet from '../pages/participant/Wallet';
 import Leaderboard from '../pages/participant/Leaderboard';
+import Store from '../pages/participant/Store';
+import Badges from '../pages/participant/Badges';
+import Orders from '../pages/participant/Orders';
 
 // Public
 import Home from '../pages/public/Home';
@@ -84,6 +88,7 @@ const router = createBrowserRouter([
       { path: '/brand/quizmasters', element: <BrandQuizmasters /> },
       { path: '/brand/quizzes', element: <BrandQuizzes /> },
       { path: '/brand/analytics', element: <BrandAnalytics /> },
+      { path: '/brand/products', element: <BrandProducts /> },
     ],
   },
 
@@ -118,6 +123,9 @@ const router = createBrowserRouter([
       { path: '/participant/attempts', element: <AttemptHistory /> },
       { path: '/participant/wallet', element: <Wallet /> },
       { path: '/participant/leaderboard', element: <Leaderboard /> },
+      { path: '/participant/store', element: <Store /> },
+      { path: '/participant/badges', element: <Badges /> },
+      { path: '/participant/orders', element: <Orders /> },
     ],
   },
 

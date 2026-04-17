@@ -1,43 +1,46 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ROLES } from '../utils/roles';
+import { clsx } from 'clsx';
 import {
-  HiOutlineHome, HiOutlineUsers, HiOutlinePuzzle, HiOutlineChartBar,
-  HiOutlineUser, HiOutlineCog, HiOutlineLogout, HiOutlineCollection,
-  HiOutlineLightningBolt, HiOutlineStar, HiOutlineBriefcase,
-  HiOutlineClipboardList, HiOutlineTrendingUp, HiOutlineAcademicCap,
-  HiOutlineCash,
-} from 'react-icons/hi';
+  LayoutDashboard, Users, Briefcase, GraduationCap, User, BarChart3,
+  Puzzle, Zap, ClipboardList, Sparkles, ShoppingCart, Package, Wallet,
+  Trophy, LogOut, ChevronsLeft, ChevronsRight, Tag,
+} from 'lucide-react';
 
 const menusByRole = {
   [ROLES.ADMIN]: [
-    { to: '/admin', label: 'Tableau de bord', icon: HiOutlineHome, end: true },
-    { to: '/admin/users', label: 'Utilisateurs', icon: HiOutlineUsers },
-    { to: '/admin/brands', label: 'Marques', icon: HiOutlineBriefcase },
-    { to: '/admin/quizmasters', label: 'Quiz Masters', icon: HiOutlineAcademicCap },
+    { to: '/admin', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
+    { to: '/admin/users', label: 'Utilisateurs', icon: Users },
+    { to: '/admin/brands', label: 'Marques', icon: Briefcase },
+    { to: '/admin/quizmasters', label: 'Quiz Masters', icon: GraduationCap },
   ],
   [ROLES.BRAND]: [
-    { to: '/brand', label: 'Tableau de bord', icon: HiOutlineHome, end: true },
-    { to: '/brand/profile', label: 'Mon Profil', icon: HiOutlineUser },
-    { to: '/brand/quizmasters', label: 'Mes Quiz Masters', icon: HiOutlineUsers },
-    { to: '/brand/quizzes', label: 'Mes Quiz', icon: HiOutlineCollection },
-    { to: '/brand/analytics', label: 'Analytiques', icon: HiOutlineChartBar },
+    { to: '/brand', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
+    { to: '/brand/profile', label: 'Mon Profil', icon: User },
+    { to: '/brand/quizmasters', label: 'Mes Quiz Masters', icon: Users },
+    { to: '/brand/quizzes', label: 'Mes Quiz', icon: Puzzle },
+    { to: '/brand/products', label: 'Mes Produits', icon: Tag },
+    { to: '/brand/analytics', label: 'Analytiques', icon: BarChart3 },
   ],
   [ROLES.QUIZMASTER]: [
-    { to: '/quizmaster', label: 'Tableau de bord', icon: HiOutlineHome, end: true },
-    { to: '/quizmaster/quizzes', label: 'Mes Quiz', icon: HiOutlineCollection },
-    { to: '/quizmaster/create', label: 'Créer un Quiz', icon: HiOutlinePuzzle },
+    { to: '/quizmaster', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
+    { to: '/quizmaster/quizzes', label: 'Mes Quiz', icon: Puzzle },
+    { to: '/quizmaster/create', label: 'Créer un Quiz', icon: Zap },
   ],
   [ROLES.PARTICIPANT]: [
-    { to: '/participant', label: 'Tableau de bord', icon: HiOutlineHome, end: true },
-    { to: '/participant/quizzes', label: 'Quiz Disponibles', icon: HiOutlineLightningBolt },
-    { to: '/participant/attempts', label: 'Historique', icon: HiOutlineClipboardList },
-    { to: '/participant/wallet', label: 'Portefeuille', icon: HiOutlineCash },
-    { to: '/participant/leaderboard', label: 'Classement', icon: HiOutlineTrendingUp },
+    { to: '/participant', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
+    { to: '/participant/quizzes', label: 'Quiz', icon: Zap },
+    { to: '/participant/attempts', label: 'Historique', icon: ClipboardList },
+    { to: '/participant/badges', label: 'Badges & XP', icon: Sparkles },
+    { to: '/participant/store', label: 'Boutique', icon: ShoppingCart },
+    { to: '/participant/orders', label: 'Commandes', icon: Package },
+    { to: '/participant/wallet', label: 'Portefeuille', icon: Wallet },
+    { to: '/participant/leaderboard', label: 'Classement', icon: Trophy },
   ],
 };
 
-export default function Sidebar({ open, onClose }) {
+export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) {
   const { user, logout } = useAuth();
   const menus = menusByRole[user?.role] || [];
 
@@ -45,52 +48,77 @@ export default function Sidebar({ open, onClose }) {
     <>
       {/* Mobile overlay */}
       {open && (
-        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
+        <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden" onClick={onClose} />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar text-white transition-transform
-          lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}
+        className={clsx(
+          'fixed inset-y-0 left-0 z-50 flex flex-col bg-sidebar transition-all duration-300',
+          'border-r border-white/[0.06]',
+          collapsed ? 'lg:w-20' : 'lg:w-64',
+          open ? 'w-64 translate-x-0' : '-translate-x-full lg:translate-x-0',
+        )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center gap-3 px-6 border-b border-white/10">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-light text-white font-bold text-lg">
+        <div className="flex h-16 items-center gap-3 px-4 border-b border-white/[0.06]">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-light text-white font-bold text-sm shadow-lg shadow-primary/20">
             A
           </div>
-          <span className="text-lg font-bold tracking-tight">AcadeCom</span>
+          {!collapsed && (
+            <span className="text-lg font-bold tracking-tight text-white">AcadeCom</span>
+          )}
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4">
-          <ul className="space-y-1">
-            {menus.map((item) => (
-              <li key={item.to}>
-                <NavLink
-                  to={item.to}
-                  end={item.end}
-                  onClick={onClose}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors
-                    ${isActive ? 'bg-sidebar-hover text-white' : 'text-gray-300 hover:bg-sidebar-hover hover:text-white'}`
-                  }
-                >
-                  <item.icon className="h-5 w-5 shrink-0" />
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+          {menus.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              onClick={onClose}
+              title={collapsed ? item.label : undefined}
+              className={({ isActive }) =>
+                clsx(
+                  'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
+                  collapsed && 'justify-center px-0',
+                  isActive
+                    ? 'bg-white/10 text-white shadow-sm shadow-white/5'
+                    : 'text-gray-400 hover:bg-white/[0.06] hover:text-white',
+                )
+              }
+            >
+              <item.icon className={clsx('h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110')} />
+              {!collapsed && <span>{item.label}</span>}
+            </NavLink>
+          ))}
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-white/10 px-3 py-4">
+        <div className="border-t border-white/[0.06] px-3 py-3 space-y-1">
+          {/* Collapse toggle (desktop only) */}
+          <button
+            onClick={onToggleCollapse}
+            className="hidden lg:flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-400 hover:bg-white/[0.06] hover:text-white transition-all"
+          >
+            {collapsed ? <ChevronsRight className="h-5 w-5 mx-auto" /> : (
+              <>
+                <ChevronsLeft className="h-5 w-5 shrink-0" />
+                <span>Réduire</span>
+              </>
+            )}
+          </button>
+
           <button
             onClick={logout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-300
-              hover:bg-red-600/20 hover:text-red-300 transition-colors"
+            className={clsx(
+              'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium',
+              'text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-all',
+              collapsed && 'justify-center px-0',
+            )}
           >
-            <HiOutlineLogout className="h-5 w-5" />
-            Déconnexion
+            <LogOut className="h-5 w-5 shrink-0" />
+            {!collapsed && <span>Déconnexion</span>}
           </button>
         </div>
       </aside>
