@@ -1,36 +1,41 @@
-import { useEffect, useState } from 'react';
 import { Users, Briefcase, GraduationCap, ShieldCheck } from 'lucide-react';
-import { getUsers } from '../../api/admin';
+import adminService from '../../api/adminService';
+import useAsync from '../../hooks/useAsync';
 import StatsCard from '../../components/StatsCard';
 import Card, { CardHeader, CardTitle } from '../../components/ui/Card';
 import Spinner from '../../components/ui/Spinner';
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Utiliser la service layer centralisée et le hook réutilisable
+  const { data, loading, error } = useAsync(
+    () => adminService.getUsers({ limit: 1000 }),
+    []
+  );
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await getUsers({ limit: 1000 });
-        const users = data.data?.users || data.users || [];
-        const counts = {
-          total: users.length,
-          participants: users.filter((u) => u.role === 'participant').length,
-          brands: users.filter((u) => u.role === 'brand').length,
-          quizmasters: users.filter((u) => u.role === 'quizmaster').length,
-          blocked: users.filter((u) => u.isBlocked).length,
-        };
-        setStats(counts);
-      } catch {
-        setStats({ total: 0, participants: 0, brands: 0, quizmasters: 0, blocked: 0 });
-      } finally {
-        setLoading(false);
+  const stats = data?.data?.users
+    ? {
+        total: data.data.users.length,
+        participants: data.data.users.filter((u) => u.role === 'participant').length,
+        brands: data.data.users.filter((u) => u.role === 'brand').length,
+        quizmasters: data.data.users.filter((u) => u.role === 'quizmaster').length,
+        blocked: data.data.users.filter((u) => u.isBlocked).length,
       }
-    })();
-  }, []);
+    : { total: 0, participants: 0, brands: 0, quizmasters: 0, blocked: 0 };
 
-  if (loading) return <Spinner className="py-24" size="lg" />;
+  if (loading)
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="rounded-lg bg-red-50 dark:bg-red-950 p-4 text-red-600 dark:text-red-400">
+        <p className="font-semibold">Erreur lors du chargement des données</p>
+        <p className="text-sm">{error}</p>
+      </div>
+    );
 
   return (
     <div className="space-y-6">
