@@ -19,15 +19,16 @@ export default function QuizResult() {
     (async () => {
       try {
         const { data } = await getAttemptResult(attemptId);
-        setResult(data);
-      } catch {} finally { setLoading(false); }
+        setResult(data?.data || data);
+      } catch { /* */ } finally { setLoading(false); }
     })();
   }, [attemptId, result]);
 
   if (loading) return <Spinner className="py-24" size="lg" />;
   if (!result) return <p className="py-24 text-center text-gray-500 dark:text-gray-400">Résultat introuvable</p>;
 
-  const data = result.result || result;
+  // Normalize potential nesting (location.state may pass full envelope or unwrapped data)
+  const data = result?.attempt || result?.data || result;
   const score = data.score ?? 0;
   const maxScore = data.maxScore ?? 1;
   const pct = Math.round((score / maxScore) * 100);

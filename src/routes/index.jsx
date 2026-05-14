@@ -15,11 +15,12 @@ import ManageQuizmasters from '../pages/admin/ManageQuizmasters';
 
 // Brand pages
 import BrandDashboard from '../pages/brand/BrandDashboard';
-import BrandProfile from '../pages/brand/BrandProfile';
 import BrandQuizmasters from '../pages/brand/BrandQuizmasters';
 import BrandQuizzes from '../pages/brand/BrandQuizzes';
 import BrandAnalytics from '../pages/brand/BrandAnalytics';
 import BrandProducts from '../pages/brand/BrandProducts';
+import BrandParticipants from '../pages/brand/BrandParticipants';
+import BrandActivity from '../pages/brand/BrandActivity';
 
 // Quizmaster pages
 import QuizmasterDashboard from '../pages/quizmaster/QuizmasterDashboard';
@@ -40,18 +41,37 @@ import Store from '../pages/participant/Store';
 import Badges from '../pages/participant/Badges';
 import Orders from '../pages/participant/Orders';
 
+// Shared pages
+import Profile from '../pages/Profile';
+import Notifications from '../pages/Notifications';
+
 // Public
 import Home from '../pages/public/Home';
+import About from '../pages/public/About';
+import Features from '../pages/public/Features';
+import Pricing from '../pages/public/Pricing';
+import Contact from '../pages/public/Contact';
+import FAQ from '../pages/public/FAQ';
 
 // Other
 import Unauthorized from '../pages/Unauthorized';
 import NotFound from '../pages/NotFound';
 
-const router = createBrowserRouter([
-  // Public — Home
-  { path: '/', element: <Home /> },
+const sharedPages = [
+  { path: 'profile', element: <Profile /> },
+  { path: 'notifications', element: <Notifications /> },
+];
 
-  // Public — Auth
+const router = createBrowserRouter([
+  // ─── Public ─────────────────────────────────────────────────
+  { path: '/', element: <Home /> },
+  { path: '/about', element: <About /> },
+  { path: '/features', element: <Features /> },
+  { path: '/pricing', element: <Pricing /> },
+  { path: '/contact', element: <Contact /> },
+  { path: '/faq', element: <FAQ /> },
+
+  // ─── Auth ───────────────────────────────────────────────────
   {
     element: <AuthLayout />,
     children: [
@@ -60,7 +80,7 @@ const router = createBrowserRouter([
     ],
   },
 
-  // Admin
+  // ─── Admin ──────────────────────────────────────────────────
   {
     element: (
       <ProtectedRoute roles={['admin']}>
@@ -72,10 +92,11 @@ const router = createBrowserRouter([
       { path: '/admin/users', element: <ManageUsers /> },
       { path: '/admin/brands', element: <ManageBrands /> },
       { path: '/admin/quizmasters', element: <ManageQuizmasters /> },
+      ...sharedPages.map((p) => ({ path: `/admin/${p.path}`, element: p.element })),
     ],
   },
 
-  // Brand
+  // ─── Brand ──────────────────────────────────────────────────
   {
     element: (
       <ProtectedRoute roles={['brand']}>
@@ -84,15 +105,17 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: '/brand', element: <BrandDashboard /> },
-      { path: '/brand/profile', element: <BrandProfile /> },
       { path: '/brand/quizmasters', element: <BrandQuizmasters /> },
       { path: '/brand/quizzes', element: <BrandQuizzes /> },
       { path: '/brand/analytics', element: <BrandAnalytics /> },
       { path: '/brand/products', element: <BrandProducts /> },
+      { path: '/brand/participants', element: <BrandParticipants /> },
+      { path: '/brand/activity', element: <BrandActivity /> },
+      ...sharedPages.map((p) => ({ path: `/brand/${p.path}`, element: p.element })),
     ],
   },
 
-  // Quizmaster
+  // ─── Quizmaster ─────────────────────────────────────────────
   {
     element: (
       <ProtectedRoute roles={['quizmaster']}>
@@ -105,10 +128,11 @@ const router = createBrowserRouter([
       { path: '/quizmaster/create', element: <CreateQuiz /> },
       { path: '/quizmaster/quizzes/:id', element: <EditQuiz /> },
       { path: '/quizmaster/quizzes/:id/analytics', element: <QuizAnalytics /> },
+      ...sharedPages.map((p) => ({ path: `/quizmaster/${p.path}`, element: p.element })),
     ],
   },
 
-  // Participant
+  // ─── Participant ────────────────────────────────────────────
   {
     element: (
       <ProtectedRoute roles={['participant']}>
@@ -126,10 +150,11 @@ const router = createBrowserRouter([
       { path: '/participant/store', element: <Store /> },
       { path: '/participant/badges', element: <Badges /> },
       { path: '/participant/orders', element: <Orders /> },
+      ...sharedPages.map((p) => ({ path: `/participant/${p.path}`, element: p.element })),
     ],
   },
 
-  // Fallback
+  // ─── Fallback ───────────────────────────────────────────────
   { path: '/unauthorized', element: <Unauthorized /> },
   { path: '*', element: <NotFound /> },
 ]);

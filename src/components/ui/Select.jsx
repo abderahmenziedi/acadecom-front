@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import { forwardRef } from 'react';
 
-const Select = forwardRef(({ label, error, options = [], className = '', ...props }, ref) => (
+const Select = forwardRef(({ label, error, options, children, className = '', ...props }, ref) => (
   <div className={className}>
     {label && (
       <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
@@ -16,9 +16,11 @@ const Select = forwardRef(({ label, error, options = [], className = '', ...prop
       )}
       {...props}
     >
-      {options.map((opt) => (
-        <option key={opt.value} value={opt.value}>{opt.label}</option>
-      ))}
+      {options
+        ? options.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))
+        : children}
     </select>
     {error && <p className="mt-1.5 text-xs text-danger">{error}</p>}
   </div>

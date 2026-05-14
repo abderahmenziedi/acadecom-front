@@ -5,38 +5,60 @@ import { clsx } from 'clsx';
 import {
   LayoutDashboard, Users, Briefcase, GraduationCap, User, BarChart3,
   Puzzle, Zap, ClipboardList, Sparkles, ShoppingCart, Package, Wallet,
-  Trophy, LogOut, ChevronsLeft, ChevronsRight, Tag,
+  Trophy, LogOut, ChevronsLeft, ChevronsRight, Tag, Bell, History, UserCircle,
 } from 'lucide-react';
 
 const menusByRole = {
   [ROLES.ADMIN]: [
+    { section: 'Général' },
     { to: '/admin', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
+    { section: 'Gestion' },
     { to: '/admin/users', label: 'Utilisateurs', icon: Users },
     { to: '/admin/brands', label: 'Marques', icon: Briefcase },
     { to: '/admin/quizmasters', label: 'Quiz Masters', icon: GraduationCap },
+    { section: 'Compte' },
+    { to: '/admin/notifications', label: 'Notifications', icon: Bell },
+    { to: '/admin/profile', label: 'Mon Profil', icon: UserCircle },
   ],
   [ROLES.BRAND]: [
+    { section: 'Général' },
     { to: '/brand', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
-    { to: '/brand/profile', label: 'Mon Profil', icon: User },
-    { to: '/brand/quizmasters', label: 'Mes Quiz Masters', icon: Users },
-    { to: '/brand/quizzes', label: 'Mes Quiz', icon: Puzzle },
-    { to: '/brand/products', label: 'Mes Produits', icon: Tag },
     { to: '/brand/analytics', label: 'Analytiques', icon: BarChart3 },
+    { section: 'Contenu' },
+    { to: '/brand/quizmasters', label: 'Quiz Masters', icon: Users },
+    { to: '/brand/quizzes', label: 'Quiz', icon: Puzzle },
+    { to: '/brand/products', label: 'Produits & Coupons', icon: Tag },
+    { to: '/brand/participants', label: 'Participants', icon: GraduationCap },
+    { section: 'Suivi' },
+    { to: '/brand/activity', label: 'Journal d\'activité', icon: History },
+    { to: '/brand/notifications', label: 'Notifications', icon: Bell },
+    { to: '/brand/profile', label: 'Mon Profil', icon: UserCircle },
   ],
   [ROLES.QUIZMASTER]: [
+    { section: 'Général' },
     { to: '/quizmaster', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
+    { section: 'Quiz' },
     { to: '/quizmaster/quizzes', label: 'Mes Quiz', icon: Puzzle },
     { to: '/quizmaster/create', label: 'Créer un Quiz', icon: Zap },
+    { section: 'Compte' },
+    { to: '/quizmaster/notifications', label: 'Notifications', icon: Bell },
+    { to: '/quizmaster/profile', label: 'Mon Profil', icon: UserCircle },
   ],
   [ROLES.PARTICIPANT]: [
+    { section: 'Général' },
     { to: '/participant', label: 'Tableau de bord', icon: LayoutDashboard, end: true },
-    { to: '/participant/quizzes', label: 'Quiz', icon: Zap },
+    { to: '/participant/quizzes', label: 'Quiz disponibles', icon: Zap },
+    { section: 'Progression' },
     { to: '/participant/attempts', label: 'Historique', icon: ClipboardList },
     { to: '/participant/badges', label: 'Badges & XP', icon: Sparkles },
+    { to: '/participant/leaderboard', label: 'Classement', icon: Trophy },
+    { section: 'Récompenses' },
     { to: '/participant/store', label: 'Boutique', icon: ShoppingCart },
     { to: '/participant/orders', label: 'Commandes', icon: Package },
     { to: '/participant/wallet', label: 'Portefeuille', icon: Wallet },
-    { to: '/participant/leaderboard', label: 'Classement', icon: Trophy },
+    { section: 'Compte' },
+    { to: '/participant/notifications', label: 'Notifications', icon: Bell },
+    { to: '/participant/profile', label: 'Mon Profil', icon: UserCircle },
   ],
 };
 
@@ -71,27 +93,42 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
 
         {/* Nav */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-          {menus.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              onClick={onClose}
-              title={collapsed ? item.label : undefined}
-              className={({ isActive }) =>
-                clsx(
-                  'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
-                  collapsed && 'justify-center px-0',
-                  isActive
-                    ? 'bg-white/10 text-white shadow-sm shadow-white/5'
-                    : 'text-gray-400 hover:bg-white/[0.06] hover:text-white',
-                )
+          {menus.map((item, idx) => {
+            if (item.section) {
+              if (collapsed) {
+                return <div key={`s-${idx}`} className="my-2 mx-auto h-px w-6 bg-white/[0.06]" />;
               }
-            >
-              <item.icon className={clsx('h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110')} />
-              {!collapsed && <span>{item.label}</span>}
-            </NavLink>
-          ))}
+              return (
+                <div
+                  key={`s-${idx}`}
+                  className="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500"
+                >
+                  {item.section}
+                </div>
+              );
+            }
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                onClick={onClose}
+                title={collapsed ? item.label : undefined}
+                className={({ isActive }) =>
+                  clsx(
+                    'group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200',
+                    collapsed && 'justify-center px-0',
+                    isActive
+                      ? 'bg-white/10 text-white shadow-sm shadow-white/5'
+                      : 'text-gray-400 hover:bg-white/[0.06] hover:text-white',
+                  )
+                }
+              >
+                <item.icon className="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-110" />
+                {!collapsed && <span>{item.label}</span>}
+              </NavLink>
+            );
+          })}
         </nav>
 
         {/* Footer */}

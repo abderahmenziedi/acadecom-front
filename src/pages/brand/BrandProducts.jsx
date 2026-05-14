@@ -1,35 +1,70 @@
-import { useEffect, useState } from 'react';
-import { getBrandProducts, createProduct, updateProduct, deleteProduct } from '../../api/store';
-import Card, { CardHeader, CardTitle } from '../../components/ui/Card';
-import Button from '../../components/ui/Button';
-import Spinner from '../../components/ui/Spinner';
-import Modal from '../../components/ui/Modal';
-import Input from '../../components/ui/Input';
+import { useEffect, useState, useCallback } from 'react';
+import { Plus, Pencil, Trash2, Tag, Search, Power, PowerOff, ShoppingBag } from 'lucide-react';
+import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Plus, Pencil, Trash2, Tag } from 'lucide-react';
+
+import {
+  getBrandProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from '../../api/store';
+import { assetUrl } from '../../api/axios';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import Input from '../../components/ui/Input';
+import Modal from '../../components/ui/Modal';
+import Badge from '../../components/ui/Badge';
+import ImageUpload from '../../components/ui/ImageUpload';
+import ConfirmModal from '../../components/ui/ConfirmModal';
+import EmptyState from '../../components/ui/EmptyState';
+import PageHeader from '../../components/ui/PageHeader';
+import Pagination from '../../components/ui/Pagination';
+import { SkeletonCard } from '../../components/ui/Skeleton';
 
 export default function BrandProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ title: '', description: '', price: '', stock: '', category: '', imageUrl: '' });
+  const [toDelete, setToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const fetchProducts = async () => {
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    price: '',
+    stock: '',
+    category: '',
+    imageUrl: '',
+  });
+
+  const load = useCallback(async () => {
+    setLoading(true);
     try {
-      const { data } = await getBrandProducts();
-      setProducts(data.data?.products || data.products || []);
-    } catch { }
-    finally { setLoading(false); }
-  };
+      const { data } = await getBrandProducts({ page, limit: 12, search: search || undefined });
+      setProducts(data?.data?.products || []);
+      setTotalPages(data?.data?.totalPages || 0);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, search]);
 
-  useEffect(() => { fetchProducts(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const resetForm = () => {
     setForm({ title: '', description: '', price: '', stock: '', category: '', imageUrl: '' });
     setEditing(null);
     setShowForm(false);
+  };
+
+  const openCreate = () => {
+    resetForm();
+    setShowForm(true);
   };
 
   const openEdit = (product) => {
@@ -41,7 +76,7 @@ export default function BrandProducts() {
       category: product.category || '',
       imageUrl: product.imageUrl || '',
     });
-    setEditing(product.id);
+    setEditing(product);
     setShowForm(true);
   };
 
@@ -58,128 +93,240 @@ export default function BrandProducts() {
         imageUrl: form.imageUrl || undefined,
       };
       if (editing) {
-        await updateProduct(editing, payload);
+        await updateProduct(editing.id, payload);
         toast.success('Produit mis à jour');
       } else {
         await createProduct(payload);
         toast.success('Produit créé');
       }
       resetForm();
-      fetchProducts();
-    } catch { }
+      load();
+    } catch { /* */ }
     finally { setSaving(false); }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Supprimer ce produit ?')) return;
+  const handleConfirmDelete = async () => {
+    if (!toDelete) return;
+    setDeleting(true);
     try {
-      await deleteProduct(id);
+      await deleteProduct(toDelete.id);
       toast.success('Produit supprimé');
-      fetchProducts();
-    } catch { }
+      setToDelete(null);
+      load();
+    } catch { /* */ }
+    finally { setDeleting(false); }
   };
 
-  if (loading) return <Spinner className="py-24" size="lg" />;
+  const toggleActive = async (p) => {
+    try {
+      await updateProduct(p.id, { isActive: !p.isActive });
+      toast.success(p.isActive ? 'Produit désactivé' : 'Produit activé');
+      load();
+    } catch { /* */ }
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mes Produits</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Gérez les récompenses de votre boutique</p>
-        </div>
-        <Button onClick={() => { resetForm(); setShowForm(true); }}>
-          <Plus className="h-4 w-4" /> Nouveau Produit
-        </Button>
+    <div>
+      <PageHeader
+        title="Produits & Coupons"
+        subtitle="Catalogue des récompenses échangeables contre les coupons des participants"
+        icon={Tag}
+        actions={
+          <Button onClick={openCreate} icon={Plus}>
+            Nouveau produit
+          </Button>
+        }
+      />
+
+      <div className="mb-4 max-w-md">
+        <Input
+          icon={Search}
+          placeholder="Rechercher un produit…"
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+        />
       </div>
 
-      {products.length > 0 ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map(product => (
-            <Card key={product.id} className="flex flex-col">
-              {product.imageUrl ? (
-                <img src={product.imageUrl} alt={product.name} className="mb-3 h-36 w-full rounded-lg object-cover" />
-              ) : (
-                <div className="mb-3 flex h-36 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-accent/10">
-                  <Tag className="h-10 w-10 text-primary/30" />
+      {loading ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+        </div>
+      ) : products.length === 0 ? (
+        <EmptyState
+          icon={ShoppingBag}
+          title={search ? 'Aucun résultat' : 'Aucun produit'}
+          description={search ? 'Essayez un autre mot-clé.' : 'Créez votre premier produit pour récompenser vos participants.'}
+          action={
+            !search && (
+              <Button icon={Plus} onClick={openCreate}>
+                Créer un produit
+              </Button>
+            )
+          }
+        />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {products.map((product, idx) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.04 }}
+            >
+              <Card className="flex flex-col h-full !p-0 overflow-hidden card-hover">
+                <div className="relative aspect-[4/3] bg-gradient-to-br from-primary/10 to-accent/10">
+                  {product.imageUrl ? (
+                    <img
+                      src={assetUrl(product.imageUrl)}
+                      alt={product.title}
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 grid place-items-center">
+                      <Tag className="h-12 w-12 text-primary/30" />
+                    </div>
+                  )}
+                  <div className="absolute top-2 right-2">
+                    <Badge variant={product.isActive ? 'success' : 'neutral'}>
+                      {product.isActive ? 'Actif' : 'Inactif'}
+                    </Badge>
+                  </div>
                 </div>
-              )}
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 dark:text-white">{product.title}</h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{product.description || '—'}</p>
-                <div className="mt-2 flex items-center gap-3 text-sm">
-                  <span className="font-bold text-secondary">{product.price} coupons</span>
-                  <span className="text-gray-400">Stock: {product.stock}</span>
+
+                <div className="flex-1 p-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-1">
+                      {product.title}
+                    </h3>
+                    {product.category && (
+                      <Badge variant="neutral" className="ml-2 capitalize">
+                        {product.category}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-2 min-h-[2.25rem]">
+                    {product.description || '—'}
+                  </p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="text-lg font-bold text-secondary">
+                      {product.price} <span className="text-xs font-medium text-gray-500">coupons</span>
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      Stock: <span className="font-semibold text-gray-700 dark:text-gray-300">{product.stock}</span>
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-3 flex gap-2 border-t border-gray-100 dark:border-gray-700 pt-3">
-                <Button size="sm" variant="outline" onClick={() => openEdit(product)}>
-                  <Pencil className="h-4 w-4" /> Modifier
-                </Button>
-                <Button size="sm" variant="danger" onClick={() => handleDelete(product.id)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </Card>
+
+                <div className="flex gap-1 border-t border-gray-100 dark:border-gray-700 p-2">
+                  <Button size="sm" variant="ghost" onClick={() => openEdit(product)} icon={Pencil} className="flex-1">
+                    Modifier
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => toggleActive(product)}
+                    icon={product.isActive ? PowerOff : Power}
+                    title={product.isActive ? 'Désactiver' : 'Activer'}
+                  />
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setToDelete(product)}
+                    icon={Trash2}
+                    className="text-red-500 hover:text-red-600"
+                    title="Supprimer"
+                  />
+                </div>
+              </Card>
+            </motion.div>
           ))}
         </div>
-      ) : (
-        <Card className="text-center py-12">
-          <Tag className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600" />
-          <p className="mt-2 text-gray-500 dark:text-gray-400">Aucun produit. Créez votre premier produit !</p>
-        </Card>
       )}
 
-      {/* Product Form Modal */}
-      <Modal open={showForm} onClose={resetForm} title={editing ? 'Modifier le Produit' : 'Nouveau Produit'}>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+
+      {/* Create / Edit modal */}
+      <Modal
+        open={showForm}
+        onClose={resetForm}
+        title={editing ? 'Modifier le produit' : 'Nouveau produit'}
+        size="lg"
+      >
+        <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <ImageUpload
+              value={form.imageUrl}
+              onChange={(url) => setForm((f) => ({ ...f, imageUrl: url || '' }))}
+              category="product"
+              label="Image du produit"
+              aspect="aspect-[16/9]"
+              hint="JPG/PNG/WEBP · max 4 Mo"
+            />
+          </div>
+
           <Input
-            label="Nom du produit"
+            label="Titre"
             value={form.title}
-            onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+            onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+            required
+            className="sm:col-span-2"
+          />
+          <div className="sm:col-span-2">
+            <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Description
+            </label>
+            <textarea
+              rows={3}
+              className="input"
+              value={form.description}
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              placeholder="Description détaillée du produit"
+            />
+          </div>
+          <Input
+            label="Prix (coupons)"
+            type="number"
+            min="1"
+            value={form.price}
+            onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
             required
           />
           <Input
-            label="Description"
-            value={form.description}
-            onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+            label="Stock"
+            type="number"
+            min="0"
+            value={form.stock}
+            onChange={(e) => setForm((f) => ({ ...f, stock: e.target.value }))}
+            required
           />
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="Prix (coupons)"
-              type="number"
-              min="1"
-              value={form.price}
-              onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
-              required
-            />
-            <Input
-              label="Stock"
-              type="number"
-              min="0"
-              value={form.stock}
-              onChange={e => setForm(f => ({ ...f, stock: e.target.value }))}
-              required
-            />
-          </div>
           <Input
             label="Catégorie"
             value={form.category}
-            onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-            placeholder="ex: Électronique, Mode..."
+            onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+            placeholder="Électronique, Mode…"
+            className="sm:col-span-2"
           />
-          <Input
-            label="URL Image"
-            value={form.imageUrl}
-            onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))}
-            placeholder="https://..."
-          />
-          <div className="flex justify-end gap-3 pt-2">
-            <Button type="button" variant="secondary" onClick={resetForm}>Annuler</Button>
-            <Button type="submit" loading={saving}>{editing ? 'Enregistrer' : 'Créer'}</Button>
+          <div className="flex justify-end gap-2 sm:col-span-2 pt-2">
+            <Button type="button" variant="ghost" onClick={resetForm}>
+              Annuler
+            </Button>
+            <Button type="submit" loading={saving}>
+              {editing ? 'Enregistrer' : 'Créer'}
+            </Button>
           </div>
         </form>
       </Modal>
+
+      <ConfirmModal
+        open={!!toDelete}
+        onClose={() => setToDelete(null)}
+        onConfirm={handleConfirmDelete}
+        title="Supprimer ce produit ?"
+        message={`Le produit « ${toDelete?.title} » sera désactivé puis retiré du catalogue. Cette action est irréversible.`}
+        confirmLabel="Supprimer"
+        loading={deleting}
+        variant="danger"
+      />
     </div>
   );
 }
