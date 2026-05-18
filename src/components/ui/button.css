@@ -1,0 +1,217 @@
+/**
+ * AcadeCom Button — STEP 3
+ * Variants: primary | secondary | ghost | danger
+ * Sizes: sm | md | lg
+ * Tokens only — no raw colors, no arbitrary spacing.
+ */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-space-2);
+  box-sizing: border-box;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-normal);
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--duration-base) var(--ease-standard),
+    background-color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard);
+}
+
+.btn:focus {
+  outline: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn--loading {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ─── Sizes ───────────────────────────────────────────────────────────────── */
+
+.btn--sm {
+  min-height: var(--ds-space-8);
+  padding: var(--ds-space-2) var(--ds-space-4);
+  font-size: var(--text-sm);
+}
+
+.btn--md {
+  min-height: var(--ds-space-8);
+  padding: var(--ds-space-3) var(--ds-space-5);
+  font-size: var(--text-md);
+}
+
+.btn--lg {
+  min-height: var(--ds-space-9);
+  padding: var(--ds-space-4) var(--ds-space-6);
+  font-size: var(--text-lg);
+}
+
+.btn--sm .btn__icon {
+  width: var(--ds-space-4);
+  height: var(--ds-space-4);
+}
+
+.btn--md .btn__icon {
+  width: var(--ds-space-4);
+  height: var(--ds-space-4);
+}
+
+.btn--lg .btn__icon {
+  width: var(--ds-space-5);
+  height: var(--ds-space-5);
+}
+
+/* ─── Interaction (hover lift, active press) ──────────────────────────────── */
+
+.btn:not(:disabled):not(.btn--loading):hover {
+  transform: translateY(-2px);
+}
+
+.btn:not(:disabled):not(.btn--loading):active {
+  transform: scale(0.98);
+}
+
+/* ─── Primary (accent CTA) ────────────────────────────────────────────────── */
+
+.btn--primary {
+  color: var(--color-on-accent);
+  background-color: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 88%, var(--color-border-strong));
+  box-shadow:
+    var(--shadow-sm),
+    0 4px 18px color-mix(in srgb, var(--color-accent) 34%, transparent);
+}
+
+.btn--primary:not(:disabled):not(.btn--loading):hover {
+  background-color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  box-shadow:
+    var(--shadow-md),
+    0 8px 24px color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+/* ─── Secondary (surface-2) ───────────────────────────────────────────────── */
+
+.btn--secondary {
+  color: var(--color-text-primary);
+  background-color: var(--color-surface-2);
+  border-color: var(--color-border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--secondary:not(:disabled):not(.btn--loading):hover {
+  background-color: var(--color-surface-3);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+/* ─── Ghost (transparent → surface on hover) ──────────────────────────────── */
+
+.btn--ghost {
+  color: var(--color-text-primary);
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.btn--ghost:not(:disabled):not(.btn--loading):hover {
+  background-color: var(--color-surface-2);
+  border-color: var(--color-border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── Danger (error semantic) ───────────────────────────────────────────────── */
+
+.btn--danger {
+  color: var(--color-on-accent);
+  background-color: var(--color-error);
+  border-color: color-mix(in srgb, var(--color-error) 85%, var(--color-border-strong));
+  box-shadow:
+    var(--shadow-sm),
+    0 4px 16px color-mix(in srgb, var(--color-error) 28%, transparent);
+}
+
+.btn--danger:not(:disabled):not(.btn--loading):hover {
+  background-color: color-mix(in srgb, var(--color-error) 88%, var(--color-background));
+  border-color: color-mix(in srgb, var(--color-error) 88%, var(--color-background));
+  box-shadow:
+    var(--shadow-md),
+    0 6px 20px color-mix(in srgb, var(--color-error) 32%, transparent);
+}
+
+/* ─── Loading spinner ─────────────────────────────────────────────────────── */
+
+.btn__spinner {
+  flex-shrink: 0;
+  width: var(--ds-space-4);
+  height: var(--ds-space-4);
+  border-radius: var(--radius-full);
+  border: 2px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-top-color: currentColor;
+  animation: btn-spin var(--duration-slow) linear infinite;
+}
+
+.btn--lg .btn__spinner {
+  width: var(--ds-space-5);
+  height: var(--ds-space-5);
+}
+
+.btn__icon {
+  flex-shrink: 0;
+}
+
+.btn__label {
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition-duration: 0.01ms;
+  }
+
+  .btn:not(:disabled):not(.btn--loading):hover {
+    transform: none;
+  }
+
+  .btn:not(:disabled):not(.btn--loading):active {
+    transform: none;
+  }
+
+  .btn__spinner {
+    animation-duration: 0.01ms;
+  }
+}

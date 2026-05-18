@@ -1,0 +1,60 @@
+/**
+ * Maps pre–design-system CSS variables to semantic tokens.
+ * Keeps existing pages/components working during the rebuild.
+ * Remove in a later phase once all consumers use --color-* / --ds-space-*.
+ */
+
+html[data-theme='dark'],
+html[data-theme='light'],
+html:not([data-theme]) {
+  --bg-primary: var(--color-background);
+  --bg-surface: var(--color-surface-1);
+  --bg-card: var(--color-surface-2);
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --border: var(--color-border-subtle);
+  --shadow: color-mix(in srgb, var(--color-background) 0%, rgb(0 0 0 / 0.35));
+
+  --accent: var(--color-accent);
+  --accent-hover: var(--color-accent-hover);
+  --text-on-accent: var(--color-on-accent);
+
+  --color-danger: var(--color-error);
+  --overlay-scrim: var(--color-overlay);
+
+  --sidebar-bg: var(--color-sidebar-bg);
+  --sidebar-text: var(--color-sidebar-text);
+  --sidebar-text-active: var(--color-sidebar-text-active);
+  --sidebar-border: var(--color-sidebar-border);
+  --nav-bg: var(--color-nav-bg);
+
+  --app-bg: var(--color-background);
+  --app-text: var(--color-text-primary);
+  --surface-bg: var(--color-surface-1);
+  --surface-border: var(--color-border-subtle);
+
+  --shadow-elevation-sm: var(--shadow-sm);
+  --shadow-elevation-md: var(--shadow-md);
+  --shadow-elevation-lg: var(--shadow-lg);
+
+  /* Legacy spacing indices (pre-STEP-2 numbering) → canonical --ds-space-* */
+  --space-1: var(--ds-space-1);
+  --space-2: var(--ds-space-2);
+  --space-3: var(--ds-space-3);
+  --space-4: var(--ds-space-4);
+  --space-5: var(--ds-space-6);
+  --space-6: var(--ds-space-7);
+  --space-7: var(--ds-space-9);
+
+  /* Legacy typography aliases */
+  --font-size-base: var(--text-md);
+  --line-height-base: var(--leading-relaxed);
+  --heading-1: var(--text-2xl);
+  --heading-2: var(--text-xl);
+  --heading-3: var(--text-lg);
+  --heading-4: var(--text-md);
+}
+
+html[data-theme='light'] {
+  --shadow: rgb(0 0 0 / 0.08);
+}
